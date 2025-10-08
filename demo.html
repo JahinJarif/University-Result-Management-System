@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Full Page to PDF</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .content {
+      width: 600px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Convert This Webpage to PDF</h1>
+  <div class="content" id="capture">
+    <h2>Sample Content</h2>
+    <p>This entire section will be captured and downloaded as a PDF.</p>
+    <ul>
+      <li>Point A</li>
+      <li>Point B</li>
+      <li>Point C</li>
+    </ul>
+  </div>
+
+  <br>
+  <button onclick="downloadPDF()">Download Full Page as PDF</button>
+
+  <script>
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const captureElement = document.getElementById('capture');
+
+      html2canvas(captureElement, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save("webpage.pdf");
+      });
+    }
+  </script>
+
+</body>
+</html>

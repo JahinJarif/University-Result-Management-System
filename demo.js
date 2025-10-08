@@ -1,0 +1,1 @@
+document.getElementsByTagName('first').style.border = '0px'
